@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cinematic Curtain Reveal</title>
+
+<style>
+/* RESET */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #111 0%, #000 70%);
+  font-family: system-ui, sans-serif;
+}
+
+/* STAGE */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #0c0c0c;
+  overflow: hidden;
+}
+
+/* CURTAINS */
+.curtain {
+  position: absolute;
+  top: 0;
+  width: 52%;
+  height: 100%;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,0.18),
+      rgba(0,0,0,0.5)
+    ),
+    repeating-linear-gradient(
+      90deg,
+      #8b0000 0px,
+      #8b0000 22px,
+      #5c0000 22px,
+      #5c0000 44px
+    );
+  box-shadow:
+    inset -25px 0 45px rgba(0,0,0,0.8),
+    0 0 60px rgba(0,0,0,0.8);
+  transition:
+    transform 2.1s cubic-bezier(0.77, 0, 0.175, 1);
+  animation: curtain-breathe 6s ease-in-out infinite;
+}
+
+/* LEFT */
+.curtain.left {
+  left: 0;
+  transform-origin: left center;
+}
+
+/* RIGHT */
+.curtain.right {
+  right: 0;
+  transform-origin: right center;
+  box-shadow:
+    inset 25px 0 45px rgba(0,0,0,0.8),
+    0 0 60px rgba(0,0,0,0.8);
+}
+
+/* SUBTLE IDLE MOTION */
+@keyframes curtain-breathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.05); }
+}
+
+/* OPEN STATE */
+.stage.open .curtain.left {
+  transform: translateX(-120%) rotateY(12deg);
+}
+
+.stage.open .curtain.right {
+  transform: translateX(120%) rotateY(-12deg);
+}
+
+/* CENTER REVEAL */
+.center-content {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  letter-spacing: 3px;
+  color: #f5c518;
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 1.4s ease 1s, transform 1.4s ease 1s;
+}
+
+.stage.open .center-content {
+  opacity: 1;
+  transform: scale(1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="stage" id="stage">
+  <div class="curtain left"></div>
+  <div class="curtain right"></div>
+
+  <div class="center-content">
+    ✨ The Moment Begins ✨
+  </div>
+</div>
+
+<script>
+/* AUTO OPEN AFTER SHORT PAUSE */
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("stage").classList.add("open");
+  }, 1200); // delay in ms (adjust for drama)
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Birthday Countdown 🎉</title>
+
+<link href="https://fonts.googleapis.com/css?family=Lato:300italic" rel="stylesheet">
+
+<style>
+/* ========== RESET ========== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ========== BODY & BACKGROUND ========== */
+body {
+  background:
+    radial-gradient(circle at top, rgba(245,197,24,0.15), transparent 40%),
+    radial-gradient(circle at bottom, rgba(106,13,173,0.2), transparent 50%),
+    linear-gradient(180deg, #0c0620, #000);
+  color: #fff6e5;
+  font-family: "Trebuchet MS", sans-serif;
+  overflow: hidden;
+}
+
+/* ========== SCREENS ========== */
+.screen {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ================= CURTAIN OVERLAY ================= */
+#curtain-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #111 0%, #000 70%);
+  z-index: 9999;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.curtain {
+  position: absolute;
+  top: 0;
+  width: 52%;
+  height: 100%;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.18), rgba(0,0,0,0.5)),
+    repeating-linear-gradient(
+      90deg,
+      #8b0000 0px,
+      #8b0000 22px,
+      #5c0000 22px,
+      #5c0000 44px
+    );
+  box-shadow: inset -25px 0 45px rgba(0,0,0,0.8);
+  transition: transform 2.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.curtain.left { left: 0; }
+.curtain.right {
+  right: 0;
+  box-shadow: inset 25px 0 45px rgba(0,0,0,0.8);
+}
+
+.stage.open .curtain.left {
+  transform: translateX(-120%) rotateY(12deg);
+}
+.stage.open .curtain.right {
+  transform: translateX(120%) rotateY(-12deg);
+}
+
+/* ========== COUNTDOWN ========== */
+.countdown-number {
+  font-size: 5rem;
+  font-weight: bold;
+  color: #f5c518;
+  animation: pop 0.6s ease;
+  text-shadow: 0 0 30px rgba(245,197,24,0.6);
+}
+
+@keyframes pop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.countdown-text {
+  margin-top: 18px;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  padding: 0 15px;
+}
+
+/* ========== CAKE WRAPPER ========== */
+.cake-wrapper {
+  width: 100%;
+  max-width: 400px;
+  height: 360px;
+  position: relative;
+  margin-bottom: 25px;
+  flex-shrink: 0;
+}
+
+/* ========== CAKE ========== */
+.cake {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+
+.bottom-layer,
+.middle-layer,
+.top-layer {
+  height: 70px;
+  width: 200px;
+  margin: auto;
+  position: relative;
+  background-repeat: repeat;
+  background-size: 100% 100%, 50px 85px;
+  background-position: 23px 0;
+  background-image:
+    linear-gradient(
+      transparent 42px,
+      #e3a953 42px,
+      #e3a953 50px,
+      transparent 50px
+    ),
+    radial-gradient(circle at 25px 4px, #713e16 25px, #eac284 26px);
+}
+
+.middle-layer {
+  transform: scale(0.85);
+  top: 60px;
+  animation: rise-1 2s forwards;
+}
+
+.top-layer {
+  transform: scale(0.7);
+  top: 120px;
+  animation: rise-2 2s 2s forwards;
+}
+
+@keyframes rise-1 { to { top: 5px; } }
+@keyframes rise-2 { to { top: 20px; } }
+
+/* ========== CANDLE ========== */
+.candle {
+  background: repeating-linear-gradient(
+    45deg,
+    #fd3018 0,
+    #fd3018 5px,
+    #ffa89e 5px,
+    #ffa89e 10px
+  );
+  height: 38px;
+  width: 13px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  bottom: 0;
+  animation: rise-3 1s 4s forwards;
+}
+
+@keyframes rise-3 { to { bottom: 168px; } }
+
+.candle::after {
+  content: "";
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  background-color: #ffee54;
+  border-radius: 0 50% 50% 50%;
+  transform: scale(0) rotate(45deg);
+  bottom: 42px;
+  left: -0.5px;
+  animation: flame 1.5s 5s forwards;
+}
+
+@keyframes flame { to { transform: scale(1) rotate(45deg); } }
+
+/* ========== GIF ========== */
+.cake-gif {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 25px;
+  flex-shrink: 0;
+}
+
+.cake-gif img {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  box-shadow: 0 0 35px rgba(245,197,24,0.35);
+}
+
+/* ========== BUTTON ========== */
+.open-letter-btn {
+  padding: 14px 34px;
+  font-size: 1.1rem;
+  background: #f5c518;
+  color: #000;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+  margin-top: 25px;
+  margin-bottom: 40px;
+  flex-shrink: 0;
+}
+
+.open-letter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(245,197,24,0.4);
+}
+
+.open-letter-btn:active {
+  transform: translateY(0);
+}
+
+/* ========== LETTER ========== */
+#letter-screen {
+  overflow-y: auto;
+}
+
+#cake-screen {
+  overflow-y: auto;
+}
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #f5c518;
+  line-height: 1.2;
+}
+
+.header p {
+  margin-top: 10px;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.letter {
+  background: rgba(0,0,0,0.65);
+  border: 3px solid #6a0dad;
+  border-radius: 20px;
+  padding: 30px 20px;
+  margin-top: 30px;
+}
+
+.paragraph { 
+  margin-bottom: 22px; 
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.highlight {
+  background: rgba(245,197,24,0.15);
+  padding: 18px;
+  border-left: 5px solid #f5c518;
+  border-radius: 10px;
+  margin: 30px 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.signature { 
+  margin-top: 25px; 
+  font-size: 1.2rem; 
+  color: #f5c518; 
+}
+
+.footer { 
+  margin-top: 50px; 
+  font-size: 1rem; 
+  color: #f5c518;
+  padding-bottom: 20px;
+}
+
+/* ========== TABLET STYLES ========== */
+@media (min-width: 768px) {
+  .screen {
+    padding: 30px;
+  }
+
+  #cake-screen {
+    padding: 50px 30px;
+  }
+
+  .countdown-number {
+    font-size: 6.5rem;
+  }
+
+  .countdown-text {
+    font-size: 1.4rem;
+  }
+
+  .cake-wrapper {
+    height: 360px;
+    margin-bottom: 25px;
+  }
+
+  .bottom-layer,
+  .middle-layer,
+  .top-layer {
+    height: 80px;
+    width: 240px;
+    background-size: 100% 100%, 60px 100px;
+    background-position: 28px 0;
+    background-image:
+      linear-gradient(
+        transparent 50px,
+        #e3a953 50px,
+        #e3a953 60px,
+        transparent 60px
+      ),
+      radial-gradient(circle at 30px 5px, #713e16 30px, #eac284 31px);
+  }
+
+  .middle-layer {
+    top: 72px;
+  }
+
+  .top-layer {
+    top: 144px;
+  }
+
+  @keyframes rise-1 { to { top: 7px; } }
+  @keyframes rise-2 { to { top: 26px; } }
+
+  .candle {
+    height: 45px;
+    width: 15px;
+  }
+
+  @keyframes rise-3 { to { bottom: 202px; } }
+
+  .candle::after {
+    height: 16px;
+    width: 16px;
+    bottom: 50px;
+  }
+
+  .cake-gif {
+    max-width: 300px;
+  }
+
+  .cake-gif img {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .open-letter-btn {
+    font-size: 1.1rem;
+    margin-top: 30px;
+    margin-bottom: 50px;
+  }
+
+  .container {
+    padding: 60px 20px;
+  }
+
+  .header h1 {
+    font-size: 3.5rem;
+  }
+
+  .header p {
+    font-size: 1.2rem;
+  }
+
+  .letter {
+    padding: 40px;
+    margin-top: 40px;
+  }
+
+  .paragraph {
+    font-size: 1.15rem;
+  }
+
+  .highlight {
+    padding: 20px;
+    margin: 40px 0;
+    font-size: 1.15rem;
+  }
+
+  .signature {
+    font-size: 1.4rem;
+  }
+
+  .footer {
+    margin-top: 70px;
+    font-size: 1.1rem;
+  }
+}
+
+/* ========== SMALL MOBILE FIXES ========== */
+@media (max-width: 375px) {
+  .countdown-number {
+    font-size: 4rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  #cake-screen {
+    padding: 30px 20px;
+  }
+
+  .cake-wrapper {
+    height: 250px;
+  }
+
+  .bottom-layer,
+  .middle-layer,
+  .top-layer {
+    height: 60px;
+    width: 170px;
+  }
+
+  .candle {
+    height: 32px;
+    width: 11px;
+  }
+
+  @keyframes rise-3 { to { bottom: 140px; } }
+
+  .cake-gif {
+    max-width: 240px;
+  }
+
+  .open-letter-btn {
+    font-size: 1rem;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- CURTAIN OVERLAY -->
+<div id="curtain-overlay">
+  <div class="stage" id="curtain-stage">
+    <div class="curtain left"></div>
+    <div class="curtain right"></div>
+  </div>
+</div>
+
+<!-- COUNTDOWN SCREEN -->
+<section id="countdown-screen" class="screen hidden">
+  <div id="countdown" class="countdown-number">3</div>
+  <div class="countdown-text">Something special is about to happen…</div>
+</section>
+
+<!-- CAKE SCREEN -->
+<section id="cake-screen" class="screen hidden">
+  <div class="cake-wrapper">
+    <div class="cake">
+      <div class="candle"></div>
+      <div class="top-layer"></div>
+      <div class="middle-layer"></div>
+      <div class="bottom-layer"></div>
+    </div>
+  </div>
+
+  <div class="cake-gif">
+    <img src="surprise.gif" alt="Birthday moment">
+  </div>
+
+  <button class="open-letter-btn" onclick="openLetter()">
+    Read the Birthday Letter 💌
+  </button>
+</section>
+
+<!-- LETTER SCREEN -->
+<section id="letter-screen" class="screen hidden">
+  <div class="container">
+    <div class="header">
+      <h1>Happy Birthday 🎉</h1>
+      <p>The one where you officially level up</p>
+    </div>
+
+    <div class="letter">
+      <div class="paragraph">Hey,</div>
+      <div class="paragraph">
+        Somewhere between random conversations,
+        long calls, and laughing at nonsense,
+        you became one of my favourite people.
+      </div>
+      <div class="highlight">
+        Here's to laughs, chaos, inside jokes,
+        and being stupid together for a long time.
+      </div>
+      <div class="signature">🦞 Always cheering for you</div>
+    </div>
+
+    <div class="footer">💜 "I'LL BE THERE FOR YOU" 💜</div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+/* ========== CURTAIN SEQUENCE ========== */
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("curtain-stage").classList.add("open");
+  }, 600);
+
+  setTimeout(() => {
+    document.getElementById("curtain-overlay").remove();
+    startCountdown();
+  }, 3000);
+});
+
+/* ========== CONFETTI LOGIC ========== */
+const duration = 25 * 1000;
+const animationEnd = Date.now() + duration;
+const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+function randomInRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+const interval = setInterval(() => {
+  const timeLeft = animationEnd - Date.now();
+  if (timeLeft <= 0) return clearInterval(interval);
+
+  const particleCount = 50 * (timeLeft / duration);
+
+  confetti(Object.assign({}, defaults, {
+    particleCount,
+    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+  }));
+  confetti(Object.assign({}, defaults, {
+    particleCount,
+    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+  }));
+}, 250);
+
+/* ========== COUNTDOWN LOGIC ========== */
+function startCountdown() {
+  const screen = document.getElementById("countdown-screen");
+  const el = document.getElementById("countdown");
+
+  screen.classList.remove("hidden");
+
+  let count = 3;
+  el.textContent = count;
+
+  const timer = setInterval(() => {
+    count--;
+
+    if (count >= 1) {
+      el.textContent = count;
+      el.style.animation = "none";
+      el.offsetHeight;
+      el.style.animation = "pop 0.6s ease";
+    } else {
+      clearInterval(timer);
+      setTimeout(() => {
+        screen.classList.add("hidden");
+        document.getElementById("cake-screen").classList.remove("hidden");
+      }, 800);
+    }
+  }, 1000);
+}
+
+function openLetter() {
+  document.getElementById("cake-screen").classList.add("hidden");
+  document.getElementById("letter-screen").classList.remove("hidden");
+  document.body.style.overflow = "auto";
+}
+</script>
+
+</body>
+</html>
